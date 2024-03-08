@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open Sans:wght@400;700&display=swap">
+
+    <title>Total Sales Pie Chart</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 39px;
+            margin-top: 50px; /* Adjust as needed */
+        canvas {
+            display: block;
+            margin: 70px auto; /* Center the chart */
+            width: 80%; /* Adjust the width as needed */
+            height: auto; /* Maintain aspect ratio */
+            max-width: 400px; /* Limit the maximum width */
+            max-height: 400px; /* Limit the maximum height */
+        }
+        }
+    </style>
+</head>
+<body>
+    <h1>Total Sales Pie Chart</h1>
+</body>
+    <center>
+    <canvas id="salesPieChart" width="700" height="700"></canvas>
+</center>
+ <div style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);">
+        <form id="filterForm">
+            <label for="sellerName" style="font-size: 32px;">Seller Name:</label>
+
+            <select id="sellerName" name="sellerName" required style="width: 300px; padding: 10px; font-size: 20px;">
+                <!-- Add options dynamically using JavaScript -->
+            </select>
+            <br>
+            <button type="submit" style="padding: 10px; font-size: 20px; background-color: green; color: white; border: none; border-radius: 5px; cursor: pointer;">Apply Filter</button>
+        </form>
+    </div>
+    
+    <script>
+        // Generate 50 random seller names
+        var sellers = [];
+        for (var i = 1; i <= 50; i++) {
+            sellers.push('Seller ' + i);
+        }
+
+        // Populate the dropdown menu with the random seller names
+        var sellerDropdown = document.getElementById('sellerName');
+        sellers.forEach(function(seller) {
+            var option = document.createElement('option');
+            option.value = seller;
+            option.textContent = seller;
+            sellerDropdown.appendChild(option);
+        });
+
+        var salesData = {
+            'Seller 1': {
+                labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk'],
+                data: [100, 200, 50]
+            },
+            'Seller 2': {
+                labels: ['Cheese', 'Almond Milk', 'Packet Milk'],
+                data: [150, 120, 300]
+            },
+            'Seller 3': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [90, 210, 40, 160, 90, 130]
+    },
+    'Seller 4': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [110, 190, 70, 140, 60, 100]
+    },
+    'Seller 5': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [130, 170, 80, 120, 50, 90]
+    },
+    'Seller 6': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [95, 205, 55, 145, 75, 115]
+    },
+    'Seller 7': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [115, 185, 65, 135, 65, 105]
+    },
+    'Seller 8': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [85, 215, 45, 155, 85, 125]
+    },
+    'Seller 9': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [105, 195, 75, 145, 55, 95]
+    },
+    'Seller 10': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [125, 175, 85, 125, 45, 85]
+    },
+    'Seller 11': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [105, 195, 55, 145, 75],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)'
+        ]
+    },
+    'Seller 12': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Cheese', 'Yogurt'],
+        data: [95, 205, 65, 135],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 13': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [110, 190, 60, 140, 70, 130],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 14': {
+        labels: ['Buffalo Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [200, 140, 90, 70],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 15': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Almond Milk', 'Packet Milk'],
+        data: [120, 180, 40, 160],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 16': {
+        labels: ['Cow Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [95, 205, 75, 125, 85],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)'
+        ]
+    },
+    'Seller 17': {
+        labels: ['Buffalo Milk', 'Almond Milk', 'Packet Milk'],
+        data: [190, 60, 150],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
+        ]
+    },
+    'Seller 18': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter'],
+        data: [130, 170, 70, 130, 90],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)'
+        ]
+    },
+    'Seller 19': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [105, 195, 65, 135, 85],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)'
+        ]
+    },
+    'Seller 20': {
+        labels: ['Buffalo Milk', 'Oat Milk', 'Cheese', 'Butter', 'Yogurt'],
+        data: [185, 55, 145, 75, 115],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)'
+        ]
+    },
+    'Seller 21': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Cheese', 'Mozzarella Cheese', 'Butter', 'Yogurt'],
+        data: [110, 190, 60, 80, 140, 70],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 22': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Cheddar Cheese', 'Gouda Cheese', 'Butter'],
+        data: [105, 195, 65, 85, 125],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)'
+        ]
+    },
+    'Seller 23': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Provolone Cheese', 'Brie Cheese', 'Butter', 'Yogurt'],
+        data: [100, 200, 70, 50, 120, 80],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 24': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Gruyère Cheese', 'Camembert Cheese', 'Butter', 'Yogurt'],
+        data: [115, 185, 55, 75, 130, 90],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 25': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Emmental Cheese', 'Roquefort Cheese', 'Butter', 'Yogurt'],
+        data: [120, 180, 65, 55, 135, 85],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 26': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Havarti Cheese', 'Stilton Cheese', 'Butter', 'Yogurt'],
+        data: [125, 175, 60, 70, 140, 80],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 27': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Jarlsberg Cheese', 'Boursin Cheese', 'Butter', 'Yogurt'],
+        data: [130, 170, 70, 60, 150, 90],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 28': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Manchego Cheese', 'Cotija Cheese', 'Butter', 'Yogurt'],
+        data: [135, 165, 75, 65, 160, 95],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 29': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Munster Cheese', 'Feta Cheese', 'Butter', 'Yogurt'],
+        data: [140, 160, 80, 70, 170, 100],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 30': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Parmesan Cheese', 'Asiago Cheese', 'Butter', 'Yogurt'],
+        data: [145, 155, 85, 75, 180, 105],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 31': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Gorgonzola Cheese', 'Blue Cheese', 'Butter', 'Yogurt'],
+        data: [150, 150, 90, 80, 190, 110],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 32': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Ricotta Cheese', 'Mascarpone Cheese', 'Butter', 'Yogurt'],
+        data: [155, 145, 95, 85, 200, 115],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 33': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Swiss Cheese', 'Colby Cheese', 'Butter', 'Yogurt'],
+        data: [160, 140, 100, 90, 210, 120],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 34': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Pepper Jack Cheese', 'Havarti Cheese', 'Butter', 'Yogurt'],
+        data: [165, 135, 105, 95, 220, 125],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 30': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Parmesan Cheese', 'Asiago Cheese', 'Butter', 'Yogurt'],
+        data: [145, 155, 85, 75, 180, 105],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+        ]
+    },
+    'Seller 36': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Almond Milk', 'Soy Milk', 'Oat Milk', 'Butter', 'Yogurt'],
+        data: [110, 190, 60, 70, 80, 140, 70],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+        ]
+    },
+    'Seller 37': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Cashew Milk', 'Coconut Milk', 'Hemp Milk', 'Butter', 'Yogurt'],
+        data: [105, 195, 65, 75, 85, 125, 65],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(54, 162, 235, 0.6)'
+        ]
+    },
+    'Seller 38': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Rice Milk', 'Soy Milk', 'Almond Milk', 'Butter', 'Yogurt'],
+        data: [100, 200, 70, 80, 90, 120, 80],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
+        ]
+    },
+    'Seller 39': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Lactose-Free Milk', 'Soy Milk', 'Oat Milk', 'Butter', 'Yogurt'],
+        data: [115, 185, 55, 65, 75, 130, 85],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 40': {
+        labels: ['Cow Milk', 'Buffalo Milk', 'Almond Milk', 'Coconut Milk', 'Hemp Milk', 'Butter', 'Lactose-Free Yogurt'],
+        data: [120, 180, 60, 70, 80, 140, 90],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 41': {
+        labels: ['Paneer', 'Cheese', 'Butter', 'Yogurt'],
+        data: [30, 40, 70, 50],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 42': {
+        labels: ['Almond Cheese', 'Olive Cheese', 'Cashew Cheese', 'Soy Butter'],
+        data: [20, 35, 55, 80],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 43': {
+        labels: ['Soy Paneer', 'Coconut Cheese', 'Cashew Butter', 'Almond Yogurt'],
+        data: [25, 30, 60, 45],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 44': {
+        labels: ['Coconut Yogurt', 'Cashew Paneer', 'Almond Cheese', 'Olive Butter'],
+        data: [40, 20, 45, 75],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 45': {
+        labels: ['Cashew Yogurt', 'Soy Paneer', 'Olive Cheese', 'Coconut Butter'],
+        data: [35, 25, 30, 65],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 46': {
+        labels: ['Olive Yogurt', 'Almond Paneer', 'Soy Cheese', 'Cashew Butter'],
+        data: [50, 15, 40, 70],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)'
+        ]
+    },
+    'Seller 47': {
+        labels: ['Cashew Cheese', 'Olive Butter', 'Soy Yogurt'],
+        data: [45, 60, 30],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
+        ]
+    },
+    'Seller 48': {
+        labels: ['Soy Cheese', 'Coconut Butter', 'Almond Yogurt'],
+        data: [35, 70, 40],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
+        ]
+    },
+    'Seller 49': {
+        labels: ['Coconut Cheese', 'Olive Butter', 'Cashew Yogurt'],
+        data: [30, 65, 35],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
+        ]
+    },
+    'Seller 50': {
+        labels: ['Almond Cheese', 'Cashew Butter', 'Soy Yogurt'],
+        data: [40, 55, 25],
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
+        ]
+    }
+};
+
+            // Add more sellers here if needed
+        
+
+        var ctx = document.getElementById('salesPieChart').getContext('2d');
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Total Sales',
+                    data: [],
+                    backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+                plugins: {
+        legend: {
+            labels: {
+                font: {
+                    size: 25
+                }
+            }
+        }
+    }
+}
+            
+        });
+
+        document.getElementById('filterForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var sellerName = document.getElementById('sellerName').value;
+
+            if (salesData[sellerName]) {
+                myPieChart.data.labels = salesData[sellerName].labels;
+                myPieChart.data.datasets[0].data = salesData[sellerName].data;
+                myPieChart.update();
+            } else {
+                alert('Seller not found');
+            }
+        });
+    </script>
+</body>
+</html>
